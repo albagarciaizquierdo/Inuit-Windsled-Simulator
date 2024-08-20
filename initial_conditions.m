@@ -1,0 +1,20 @@
+function x0 = initial_conditions
+x0(1) = 0;      % x_S    
+x0(2) = 0;      % y_S
+x0(3) = 0;      % psi_S
+x0(4) = 0;      % v_x^S 
+x0(5) = 0;      % v_y^S 
+x0(6) = 0;      % r_S 
+x0(7) = -20;    % x_K
+x0(8) = 0;      % y_K
+x0(9) = -48;    % z_K
+x0(10) = 0;     % phi_K
+x0(11) = 0;     % theta_K
+x0(12) = 0;     % psi_K
+x0(13) = 0;     % u
+x0(14) = 0;     % v
+x0(15) = 0;     % w
+x0(16) = 0;     % p_K
+x0(17) = 0;     % q_K
+x0(18) = 0;     % r_K
+end
