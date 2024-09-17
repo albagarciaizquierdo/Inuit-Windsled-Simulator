@@ -1,5 +1,5 @@
 function figures = fun_par_fig(flag,p,points,vw_max,frame,x_red0_design,color)
-%% Function description:
+%% Description:
 % Generate several figures for the parametric study based on the slection
 % of the "flag" variable
 %% Inputs:
@@ -26,7 +26,7 @@ function figures = fun_par_fig(flag,p,points,vw_max,frame,x_red0_design,color)
     % frame = 1 --> SK
 % x_red0_design --> initial guess (reduces state vector) for vw=10m/s
 % color --> struct with colors definitions for graphs
-%% Output
+%% Output:
 % Figures --> variable containing all the figures
 
 %%

@@ -1,3 +1,4 @@
+%% MAIN FOR NUMERICAL INTEGRATION 
 clc;
 clear all;
 close all;
@@ -10,61 +11,73 @@ global frame
 p = parameters;
 frame = 0;
 
-%% EQUILIBRIUM STATE
-% Initial guess for equilibrium
-Gamma0 = 60*acos(-1)/180;
+%% EQUILIBRIUM STATE CALCULATION
+fprintf('EQUILIBRIUM STATE CALCULATION \n');
+% Initial guesses for equilibrium
+gamma0 = 60*acos(-1)/180;
 alpha0 = 10*acos(-1)/180;
-x_K0 = - (p.l0+1)*cos(Gamma0);
-z_K0 = - (p.l0+1)*sin(Gamma0);
+x_K0 = - 1.1*p.l0*cos(gamma0);
+z_K0 = - 1.1*p.l0*sin(gamma0);
 x_red0 = [x_K0 z_K0 alpha0]';
+fprintf('Initial guesses: \n x_eq0 = %.2f m \n z_eq0 = %.2f m \n theta_eq0 = %.4f rad = %.2f deg \n', x_K0, z_K0, alpha0, rad2deg(alpha0));
 
 % Equilibirum state calculation
-[X_red_eq Error EXITO] = my_fzero("fun_equilibrio_red",x_red0,1e-8,30,1e-6);
-x_eq = equilibrium_conditions(X_red_eq);
+[X_red_eq, ~, ~] = my_fzero("fun_equilibrio_red",x_red0,1e-8,30,1e-6);
+x_eq = fun_equilibrium_conditions(X_red_eq);
+[gamma_p_eq, gamma_m_eq] = fun_gamma(x_eq,p);
+fprintf('Equilibrium state: \n x_eq = %.2f m \n z_eq = %.2f m \n theta_eq = %.4f rad = %.2f deg \n gamma_eq = %.2f deg \n', X_red_eq(1), X_red_eq(2), X_red_eq(3), rad2deg(X_red_eq(3)), gamma_p_eq);
 
 % Equilibrium state drawing
 title_eq = "System in equilibrium";
 box = 0;
 fun_draw_system2(p,x_eq,title_eq,box)
 
-%% STABILITY
-% Jacobian, eigenvalues and eigenvectors
+% Equilibrium state results
+% [F_S,M_OS,T_ASp,T_ASm,W_S,N,F_r,ASp_AKp,ASm_AKm,up,um,ASp_OS,ASm_OS,OK_AKp,OK_AKm,F_K,M_OK,v_OK,omega_KE,H_OK,W_K,T_AKp,T_AKm,F_a,M_a,alpha,beta,v_a,l_p,l_m,dxdt_eq] = fun_get_results(x_eq,p,frame)
+fprintf('\n');
+%% STABILITY WITH LINEAR THEORY
+fprintf('STABILITY WITH LINEAR THEORY \n');
+
+% Jacobian computation
 dh = 1e-6;
 J_eq = fun_jac_num(@RHS,0,x_eq,dh);
-
+J_cond = cond(J_eq);
 imag_J = any(imag(J_eq(:)) ~= 0);
 if imag_J
     disp('Jacobian has imaginary values');
 else
     disp('Jacobian has NO imaginary values');
 end
+fprintf('Jacobian condition number = %.2e \n', J_cond);
 
 [vec_J, val_J]=eig(J_eq);
 
-format short e
-eigenvalues_J = diag(val_J)
-
-J_cond = cond(J_eq)
-rho = zeros(1,18);
-omega = zeros(1,18);
+fprintf('Eigenvalues: \n')
+eigenvalues_J = diag(val_J);
 
 for i = 1:length(eigenvalues_J)
-    rho(i) = real(eigenvalues_J(i));
-    omega(i) = imag(eigenvalues_J(i));
+    n = real(eigenvalues_J(i));
+    omega = imag(eigenvalues_J(i));
+    if omega == 0
+        fprintf('lambda_%d = %.2e\n', i, n);
+    else
+        fprintf('lambda_%d = %.2e + %.2ei\n', i, n, omega);
+    end
 end
 
-% v7 = process_vector(vec_J(:,7))
-% v8 = process_vector(vec_J(:,8))
-% v9 = process_vector(vec_J(:,9))
-% v10 = process_vector(vec_J(:,10))
-% v11 = process_vector(vec_J(:,11))
-% v12 = process_vector(vec_J(:,12))
-% v13 = process_vector(vec_J(:,13))
-% v14 = process_vector(vec_J(:,14))
-% v15 = process_vector(vec_J(:,15))
-% v16 = process_vector(vec_J(:,16))
-% v17 = process_vector(vec_J(:,17))
-% v18 = process_vector(vec_J(:,18))
+
+% v7 = fun_process_vector(vec_J(:,7))
+% v8 = fun_process_vector(vec_J(:,8))
+% v9 = fun_process_vector(vec_J(:,9))
+% v10 = fun_process_vector(vec_J(:,10))
+% v11 = fun_process_vector(vec_J(:,11))
+% v12 = fun_process_vector(vec_J(:,12))
+% v13 = fun_process_vector(vec_J(:,13))
+% v14 = fun_process_vector(vec_J(:,14))
+% v15 = fun_process_vector(vec_J(:,15))
+% v16 = fun_process_vector(vec_J(:,16))
+% v17 = fun_process_vector(vec_J(:,17))
+% v18 = fun_process_vector(vec_J(:,18))
 
 
 
@@ -72,6 +85,7 @@ end
 x_S_t = -4;
 y_S_t = -6;
 x_eq_t = zeros(18,1);
+
 for i=1:18
     if i == 1
         x_eq_t(i) = x_S_t;
@@ -85,18 +99,20 @@ for i=1:18
         x_eq_t(i) = x_eq(i);
     end
 end
-% steps = 30;
-% tspan = linspace(1,60,steps);
-% opts = odeset('RelTol',1e-8,'AbsTol',1e-8);
-% [t,x] = ode15s(@RHS,tspan,x_eq_t,opts);
+steps = 30;
+tspan = linspace(1,60,steps);
+opts = odeset('RelTol',1e-8,'AbsTol',1e-8);
+[t,x] = ode15s(@RHS,tspan,x_eq_t,opts);
 
-% figures = fun_draw_results_eq(x,t,p,frame);
-% fun_download_fig('eq_t',figures,360,350)
-
-%% PERTURBATION
+figures = fun_draw_results_eq(x,t,p,frame);
+fun_download_fig('eq_translated',figures,360,350)
+figures = 0;
+%% ADDING A PERTURBATION
 x_per = x_eq;
 
-flag = 20;
+% Select which variable to perturb from 1 to 18 (bigger than than every
+% component will be perturbed)
+flag = 1;
 
 for i = 1:18
     if flag <= 18 && flag == i
@@ -109,80 +125,38 @@ for i = 1:18
         x_per = x_eq - 1e-3;
     end
 end
-%% INTEGRATOR
 
+
+% INTEGRATOR
 steps = 300; 
 tspan = linspace(1,300,steps);
 opts = odeset('RelTol',1e-8,'AbsTol',1e-8);
-x0 = initial_conditions;
-x0(4) = -1e-3;
 
 [t,x] = ode15s(@RHS,tspan,x_per,opts);
-% [t,x] = ode15s(@RHS,tspan,x0,opts);
 
-%% RESULTS
+
+% RESULTS
 [F_S,M_OS,T_ASp,T_ASm,W_S,N,F_r,v_OS,ASp_AKp,ASm_AKm,up,um,ASp_OS,ASm_OS,OK_AKp,...
     OK_AKm,F_K,M_OK,v_OK,omega_KE,H_OK,W_K,T_AKp,T_AKm,F_a,M_a,alpha,beta,v_a,l_p,l_m,dxdt] = fun_get_results(x,p,frame);
 
-%% PLOTS
-frame = 0; % SE (For SK frame = 1)
-% figures = fun_draw_results(x,t,p,frame);
+% PLOTS
 figures = fun_draw_results_stab(x, t, p, frame);
-fun_download_fig('all_3',figures,360,400);
+fun_download_fig('x_stab_xS',figures,360,350);
+figures = 0;
+%% NEUTRAL EIGENMODES
+v15 = vec_J(:,15);
+v17 = vec_J(:,17);
+v18 = vec_J(:,18);
 
-%% VIDEO
-% fun_video(p,x,"xeq_50_fixed",t)
+% Write the neutral eigenmode to be analyzed
+v = v15;
 
-%% SAVE FIGURES
-% % Create folder
-% folderName = 'Figures_13_07_pert_vxS_SE_neg';
-% if ~exist(folderName, 'dir')
-%     mkdir(folderName);
-% end
-% 
-% % Obtain figures object
-% figures = findall(groot, 'Type', 'figure');
-% 
-% % Save each figure as jpg in the created folder
-% for i = 1:9
-%     fig = figures(i); 
-%     filename = sprintf('%s/figure_%d.jpg', folderName, i);
-%     saveas(fig, filename);
-% end
-function output_vector = process_vector(input_vector)
-    % Esta función recibe un vector de 18 filas, redondea a 0 los valores menores 
-    % (en valor absoluto) de 1e-10, y convierte los demás números a notación 
-    % científica con 3 cifras significativas, mostrando tanto la parte real como
-    % la parte imaginaria.
+x_n = x_eq + 1e-3*v;
 
-    % Verificar que el input_vector tiene 18 filas
-    if length(input_vector) ~= 18
-        error('El vector de entrada debe tener 18 filas.');
-    end
-    
-    % Inicializar el vector de salida
-    output_vector = zeros(size(input_vector));
-    
-    % Procesar cada elemento del vector
-    for i = 1:length(input_vector)
-        real_part = real(input_vector(i));
-        imag_part = imag(input_vector(i));
-        
-        % Redondear la parte real e imaginaria si son significativas
-        if abs(real_part) < 1e-10
-            real_part = 0;
-        else
-            real_part = round(real_part, 3, 'significant');
-        end
-        
-        if abs(imag_part) < 1e-10
-            imag_part = 0;
-        else
-            imag_part = round(imag_part, 3, 'significant');
-        end
-        
-        % Reconstruir el número complejo con las partes redondeadas
-        output_vector(i) = real_part + 1i * imag_part;
-    end
-    
-end
+steps = 700; 
+tspan = linspace(1,100,steps);
+opts = odeset('RelTol',1e-8,'AbsTol',1e-8);
+[t,x] = ode15s(@RHS,tspan,x_n,opts);
+
+figures = fun_draw_results_stab(x, t, p, frame);
+fun_download_fig('x_neutral_15',figures,360,350);

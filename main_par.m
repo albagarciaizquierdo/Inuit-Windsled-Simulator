@@ -41,13 +41,15 @@ x_red0 = [x_K0 z_K0 alpha0]';
 
 % Equilibirum state calculation
 [X_red_eq, ~, ~] = my_fzero("fun_equilibrio_red",x_red0,1e-8,30,1e-6);
-x_eq = equilibrium_conditions(X_red_eq);
+x_eq = fun_equilibrium_conditions(X_red_eq);
 [gamma_p_eq, gamma_m_eq] = fun_gamma(x_eq,p);
 
 %% RESULTS
 points = 100;
 vw_max = 14;
 fig = 0;
+
+% Uncomment the derired flag and results
 
 % Flag = 1 --> Kite position vs wind velocity with vw_min 
 % figures = fun_par_fig(1,p,points,vw_max,frame,x_red0,color);
@@ -62,7 +64,7 @@ fig = 0;
 % figures = fun_par_fig(4,p,points,vw_max,frame,x_red0,color);
 
 % Flag = 5 --> All vs vw for different S
-figures = fun_par_fig(5,p,points,vw_max,frame,x_red0,color);
+% figures = fun_par_fig(5,p,points,vw_max,frame,x_red0,color);
 
 % Flag = 6 --> All vs vw for different yA_K
 % figures = fun_par_fig(6,p,points,vw_max,frame,x_red0,color);
@@ -86,12 +88,12 @@ figures = fun_par_fig(5,p,points,vw_max,frame,x_red0,color);
 % figures = fun_par_fig(12,p,points,vw_max,frame,x_red0,color);
 
 % Flag = 13 --> z_K vs vw for different mu_s
-% figures = fun_par_fig(13,p,points,vw_max,frame,x_red0,color);
+figures = fun_par_fig(13,p,points,vw_max,frame,x_red0,color);
 
 %% SAVE FIGURES
 fig = fig + length(figures);
 
-foldername = 'prueba';
+foldername = 'folder_name';
 width = 360;
 height = 350;
 fun_download_fig(foldername,figures,width,height)

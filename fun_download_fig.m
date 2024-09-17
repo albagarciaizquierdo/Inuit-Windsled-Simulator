@@ -1,6 +1,6 @@
 function fun_download_fig(foldername,figures,width,height)
-%% Function description:
-% It downloads figures in .jpg format to an specific folder with a 
+%% Description:
+% This function downloads figures in .jpg format to an specific folder with a 
 % resolution of 600 ppi and specific width and height
 %% Inputs:
 % foldername --> string of the desired folder name 
@@ -20,7 +20,7 @@ for i = 1:length(figures)
     figure(figures(i));
     filename = fullfile(foldername, sprintf('figure_%d.jpg', i));
     set(figures(i), 'PaperPositionMode', 'auto');
-    set(figures(i), 'Position', [0, 0, width, height]); %[0,0,width,height]
+    set(figures(i), 'Position', [0, 0, width, height]);
     print(figures(i), filename, '-djpeg', '-r600'); % Resolution at 600 ppi
 end
 end

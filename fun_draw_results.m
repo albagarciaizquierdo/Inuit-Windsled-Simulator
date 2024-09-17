@@ -1,7 +1,15 @@
 function figures = fun_draw_results(x, t, p, frame)
-%% Frame for the kite
-% frame = 1 --> SK
-% frame = 0 --> SE
+%% Description: 
+% This function draws the results of state vector x vs time 
+%% Inputs: 
+% x --> state vector 
+% t --> timespan 
+% p --> struct containing parameters
+% frame --> reference frame to show kite's results 
+%   frame = 1 --> SK
+%   frame = 0 --> SE
+%% Outputs: 
+% figures 
 
 %% Plot settings
 color.blue = [0 0 1];

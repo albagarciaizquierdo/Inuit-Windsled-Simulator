@@ -1,7 +1,16 @@
 function figures = fun_draw_results_stab(x, t, p, frame)
-%% Frame for the kite
-% frame = 1 --> SK
-% frame = 0 --> SE
+%% Description: 
+% This function draws the results of state vector x vs time specifically
+% for the stability analysis with numerical integration
+%% Inputs: 
+% x --> state vector 
+% t --> timespan 
+% p --> struct containing parameters
+% frame --> reference frame to show kite's results 
+%   frame = 1 --> SK
+%   frame = 0 --> SE
+%% Outputs: 
+% figures 
 
 %% Plot settings
 color.blue = [0 0 1];
@@ -26,8 +35,8 @@ set(groot,'defaultTextInterpreter', 'latex');
 
 %% Helper function to adjust y-limits
 function adjust_ylim(ax, data)
-    if max(abs(data(:))) < 10^-6
-        ylim(ax, [-1e-6, 1e-6]);
+    if max(abs(data(:))) < 10^-5
+        ylim(ax, [-1e-4, 1e-4]);
     end
 end
 
@@ -77,6 +86,8 @@ plot(t, F_S(:,3))
 xlabel('$t$ (s)')
 ylabel('Sled force (N)')
 legend('$\textbf{F}_S \cdot\textbf{i}_E$','$\textbf{F}_S\cdot\textbf{j}_E$','$\textbf{F}_S\cdot\textbf{k}_E$')
+adjust_ylim(gca, F_S);
+
 
 subplot(2,1,2);
 plot(t, F_K(:,1),'Color',color.blue, 'LineWidth', 1.5)
@@ -171,13 +182,15 @@ subplot(2,1,1)
 plot(t, x(:,2))
 xlabel('$t$ (s)')
 ylabel('$y_S$ (m)')
-adjust_ylim(gca, x(:,2));
+adjust_ylim(gca,(x(:,2)));
+% ylim([-2.6*10^(-4)  -2.5*10^(-4)])
 
 subplot(2,1,2)
 plot(t, x(:,8))
 xlabel('$t$ (s)')
 ylabel('$y_K$ (m)')
-adjust_ylim(gca, x(:,8));
+adjust_ylim(gca,(x(:,8)));
+% ylim([-2.6*10^(-4)  -2.5*10^(-4)])
 
 %% 19
 figure;

@@ -1,8 +1,30 @@
 function [F_K,M_OK,v_OK,omega_KE,H_OK,W_K,T_AKp,T_AKm,F_a,M_a,alpha,beta,v_a] = fun_kite(p,x,R,OK_AKp,OK_AKm,T_ASp,T_ASm)
-%% Description: This function computes forces and moments acting ond the
+%% Description: 
+% This function computes forces and moments acting ond the
 % kite
-% Inputs: parameters, state vector, R_KE
-% Outputs: Kite forces and moments in S_K
+%% Inputs:
+% x --> state vector/matrix
+% p --> struct containing parameters
+% R --> struct containing rotation matrices
+% OK_AKp --> Position vector from OK to AK+
+% OK_AKm --> Position vector from OK to AK-
+% T_ASp --> Tether tension from AS+
+% T_ASm --> Tether tension from AS-
+
+%% Outputs: (all in S_K in SI units)
+% F_K --> Kite force
+% M_OK --> Kite moment about OK
+% v_OK --> Kite velocity
+% omega_KE --> Kite angular velocity
+% H_OK --> Kite angular momentum
+% W_K --> Kite weight
+% T_AKp --> Tether tension from AK+
+% T_AKm --> Tether tension from AK-
+% F_a --> Aerodynamic force
+% M_a --> Aerodynamic moment
+% alpha --> angle of attack
+% beta --> sideslip angle
+% v_a --> Aerodynamic velocity
 
 %% Vectors in S_E
 i_E = [1; 0; 0];

@@ -1,7 +1,21 @@
 function [ASp_AKp,ASm_AKm,up,um,ASp_OS,ASm_OS,OK_AKp,OK_AKm,T_ASp,T_ASm] = fun_tethers(p,x,R)
-%% Description: This function computes tether vectors and tensions
-% Inputs: rotation matrices, parameters, state vector
-% Outputs: position vectors, um, up, tensions
+%% Description: 
+% This function computes tether vectors and tensions
+%% Inputs: 
+% x --> state vector/matrix
+% p --> struct containing parameters
+% R --> struct containing rotation matrices
+%% Outputs: (all in S_E in SI units)
+% ASp_AKp --> Position vector from AS+ to AK+
+% ASm_AKm --> Position vector from AS- to AK-
+% up --> unitary vector with origin at AS+ and tips at AK+
+% um --> unitary vector with origin at AS- and tips at AK-
+% ASp_OS --> Position vector from AS+ to OS
+% ASm_OS --> Position vector from AS- to OS
+% OK_AKp --> Position vector from OK to AK+
+% OK_AKm --> Position vector from OK to AK-
+% T_ASp --> Tether tension from AS+
+% T_ASm --> Tether tension from AS-
 
 %% Vectors in S_E
 i_E = [1; 0; 0];

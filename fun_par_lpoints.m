@@ -1,5 +1,24 @@
 function [x_eq, v_w, gamma, alpha, l, v_w_min] = fun_par_lpoints(p,points,x_red0_design,frame)
+%% Description: 
+% This function computes the state vector, wind speed, angles of elevation
+% and attack, tether's length and minimum wind speed for values of wind
+% speed smaller than the design point p.vw
+%% Inputs: 
+% p --> struct containing parameters
+% points --> number of desired points (length of the ouput vectors)
+% x_red0_design --> initial guess for the design point
+% frame --> reference frame to show kite's results 
+%   frame = 1 --> SK
+%   frame = 0 --> SE
+%% Ouputs:
+% x_eq --> equilibrium state matrix 
+% v_w --> wind speed vector
+% gamma --> elevation angle vector
+% alpha --> angle of attack vector
+% l --> tether's length vector
+% v_w_min --> minimum wind speed (scalar)
 
+%%
 global p
 gamma = zeros(1,points);
 v_w = zeros(1,points);
@@ -24,7 +43,7 @@ for i=1:points
         v_w(i) = p.v_w;
     end
     [X_red_eq(:,i),~,~] = my_fzero("fun_equilibrio_red",x_red0(:,i),1e-8,30,1e-6);
-    x_eq(:,i) = equilibrium_conditions(X_red_eq(:,i));
+    x_eq(:,i) = fun_equilibrium_conditions(X_red_eq(:,i));
     [gamma(i),~] = fun_gamma(x_eq(:,i),p);
     [~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,~,alpha(i),beta(i),v_a(:,i),l(:,i),~,~] = fun_get_results(x_eq(:,i),p,frame);
 end

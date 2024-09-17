@@ -1,7 +1,15 @@
 function [F_a,M_a,alpha,beta,v_a] = fun_aerod(p,x,v_OK,R)
-%% Description: This function computes the aerodynamic force and moment on the kite
-% Inputs: parameters, state vector & kite velocity vector
-% Outputs: aerodynamic force, moment in S_K, AoA, sidelip angle (radians)
+%% Description: 
+% This function computes the aerodynamic force and moment on the kite
+%% Inputs: 
+% p --> struct containing parameters
+% x --> state vector 
+% v_OK --> kite velocity vector (m/s)
+%% Outputs: 
+% F_a --> aerodynamic force (N)
+% M_a --> aerodynamic moment in S_K (N·m)
+% alpha --> angle of attck (rad)
+% beta --> sidelip angle (rad)
 
 %% Vectors in S_E
 i_E = [1; 0; 0];

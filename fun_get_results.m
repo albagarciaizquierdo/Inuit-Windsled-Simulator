@@ -1,4 +1,51 @@
 function [F_S,M_OS,T_ASp,T_ASm,W_S,N,F_r,v_OS,ASp_AKp,ASm_AKm,up,um,ASp_OS,ASm_OS,OK_AKp,OK_AKm,F_K,M_OK,v_OK,omega_KE,H_OK,W_K,T_AKp,T_AKm,F_a,M_a,alpha,beta,v_a,l_p,l_m,dxdt] = fun_get_results(x,p,frame)
+%% Description: 
+% This function gives all the results (forces, moments, velocities, 
+% positions, lengths and derivative of the state vector) for a given state 
+% vector or matrix x
+%% Inputs: 
+% x --> state vector/matrix
+% p --> struct containing parameters
+% frame --> reference frame to show kite's results 
+%   frame = 1 --> SK
+%   frame = 0 --> SE
+%% Outputs: 
+% F_S --> Sled force
+% M_OS --> Sled moment about OS
+% T_ASp --> Tether tension from AS+
+% T_ASm --> Tether tension from AS-
+% W_S --> Sled weight
+% N --> Normal force
+% F_r --> Friction force
+% v_OS --> Sled velocity
+% ASp_AKp --> Position vector from AS+ to AK+
+% ASm_AKm --> Position vector from AS- to AK-
+% up --> unitary vector with origin at AS+ and tips at AK+
+% um --> unitary vector with origin at AS- and tips at AK-
+% ASp_OS --> Position vector from AS+ to OS
+% ASm_OS --> Position vector from AS- to OS
+% OK_AKp --> Position vector from OK to AK+
+% OK_AKm --> Position vector from OK to AK-
+
+% F_K --> Kite force
+% M_OK --> Kite moment about OK
+% v_OK --> Kite velocity
+% omega_KE --> Kite angular velocity
+% H_OK --> Kite angular momentum
+% W_K --> Kite weight
+% T_AKp --> Tether tension from AK+
+% T_AKm --> Tether tension from AK-
+% F_a --> Aerodynamic force
+% M_a --> Aerodynamic moment
+% alpha --> angle of attack
+% beta --> sideslip angle
+% v_a --> Aerodynamic velocity
+
+% l_p --> tether + length
+% l_m --> tether - length
+
+% dxdt --> derivative of the state vector (RHS)
+%%
 % x should be a matrix nx18
 size_x = size(x);
 if size_x(2) ~= 18
@@ -58,10 +105,6 @@ for i = 1:n
     % Sled and kite variables
     [F_S(i,:),M_OS(i,:),T_ASp(i,:),T_ASm(i,:),W_S(i,:),N(i,:),F_r(i,:),v_OS(i,:),ASp_AKp(i,:),ASm_AKm(i,:),up(i,:),um(i,:),ASp_OS(i,:),ASm_OS(i,:),OK_AKp(i,:),OK_AKm(i,:)] = fun_sled(p,x(i,:),R);
     [F_K(i,:),M_OK(i,:),v_OK(i,:),omega_KE(i,:),H_OK(i,:),W_K(i,:),T_AKp(i,:),T_AKm(i,:),F_a(i,:),M_a(i,:),alpha(i,:),beta(i,:),v_a(i,:)] = fun_kite(p,x(i,:),R,OK_AKp(i,:),OK_AKm(i,:),T_ASp(i,:),T_ASm(i,:));
-%     fprintf('Fr results = ');
-%     fprintf('%.2f ',F_r(i,:));
-%     fprintf('\n')
-    % Lines length
     l_p(i,:) = norm(ASp_AKp(i,:));
     l_m(i,:) = norm(ASm_AKm(i,:));
     

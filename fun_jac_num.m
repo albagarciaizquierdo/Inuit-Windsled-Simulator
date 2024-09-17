@@ -1,5 +1,8 @@
 function Jnum = fun_jac_num(funcion,t,Y,dh)
-    
+%% Description: 
+% This function computes the numerical jacobian of a function at a given time
+
+%%
 Jnum = zeros(length(Y),length(Y));
 
   
